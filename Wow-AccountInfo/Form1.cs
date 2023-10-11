@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -15,7 +17,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using static System.Net.WebRequestMethods;
+using static System.Windows.Forms.LinkLabel;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace Wow_Launcher
 {
@@ -63,7 +67,7 @@ namespace Wow_Launcher
                     outputFile.WriteLine(line);
             }
             */
-
+            var Invalidexists = "false";
             string ServerName = "Server=" + textBox1.Text;
             string AccName = "Account=" + textBox2.Text;
             string Password = "Password=" + textBox3.Text;
@@ -71,9 +75,36 @@ namespace Wow_Launcher
 
             string fileName = @"Data\" + textBox1.Text + ".txt";
 
+            var pn = fileName;
+            var badStrings = new List<string>()
+                 {
+                 "<",">","?","*","#"
+                 };
+            foreach (var badString in badStrings)
+            {
+                if (pn.Contains(badString))
+                {
+                    Invalidexists = "true";
+
+                    DialogResult g;
+                    g = MessageBox.Show("Error Invalid Character " + badString + " in Server Name.", "error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    if (g == DialogResult.OK)
+                    {
+
+                    }
+
+                    else
+                    {
+                        Invalidexists = "false";
+                    }
+
+                }
+            }
 
 
-            string[] lines = { ServerName, AccName, Password };
+            if (Invalidexists == "false")
+            { 
+                string[] lines = { ServerName, AccName, Password };
             using (StreamWriter outputFile = new StreamWriter(fileName, true))
             {
                 foreach (string line in lines)
@@ -81,27 +112,32 @@ namespace Wow_Launcher
             }
             comboBox1.BeginUpdate();
             comboBox1.Items.Clear();
-                string[] textFiles = System.IO.Directory.GetFiles(@"Data\", "*.txt");
-                foreach (string file in textFiles)
-                {
-                    // Remove the directory from the string
-                    string filename = file.Substring(file.LastIndexOf(@"\") + 1);
-                    // Remove the extension from the filename
-                    string name = filename.Substring(0, filename.LastIndexOf(@"."));
-                    // Add the name to the combo box
-                    comboBox1.Items.Add(name);
-                }
-            
+            string[] textFiles = System.IO.Directory.GetFiles(@"Data\", "*.txt");
+            foreach (string file in textFiles)
+            {
+                // Remove the directory from the string
+                string filename = file.Substring(file.LastIndexOf(@"\") + 1);
+                // Remove the extension from the filename
+                string name = filename.Substring(0, filename.LastIndexOf(@"."));
+                // Add the name to the combo box
+                comboBox1.Items.Add(name);
+            }
+
             comboBox1.EndUpdate();
             comboBox1.Text = "";
             textBox1.Text = "";
             textBox2.Text = "";
             textBox3.Text = "";
 
+            textBox1.ReadOnly = true;
+            textBox2.ReadOnly = true;
+            textBox3.ReadOnly = true;
+
             button1.Visible = false;
             button2.Visible = false;
             button3.Visible = false;
             button3.Visible = false;
+            }
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
