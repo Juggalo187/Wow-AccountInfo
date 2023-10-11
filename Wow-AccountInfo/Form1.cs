@@ -33,6 +33,8 @@ namespace Wow_Launcher
             InitializeComponent();
             if (!Directory.Exists(@"Data\"))
             { Directory.CreateDirectory(@"Data\"); }
+
+            textBox3.PasswordChar = '*';
         }
 
         private void Form1_Load(object sender, EventArgs e)
