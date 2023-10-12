@@ -16,7 +16,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
-using static System.Net.WebRequestMethods;
 using static System.Windows.Forms.LinkLabel;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using MessageBox = System.Windows.Forms.MessageBox;
@@ -49,33 +48,19 @@ namespace Wow_Launcher
 
         private void button1_Click(object sender, EventArgs e)
         {
-
-            /*
-            string ServerName = "Server=" + textBox1;
-            string AccName = "Account=" + textBox2;
-            string Password = "Password=" + textBox2;
-
-
-            // Create a string array with the lines of text
-            string[] lines = { ServerName, AccName, Password };
-
-            // Set a variable to the Documents path.
-            string docPath = @"Data\" + textBox1 + ".txt"; // use '+' to combine strings
-
-            // Write the string array to a new file named "WriteLines.txt".
-            using (StreamWriter outputFile = new StreamWriter(docPath))
-            {
-                foreach (string line in lines)
-                    outputFile.WriteLine(line);
-            }
-            */
+            
+          
             var Invalidexists = "false";
             string ServerName = "Server=" + textBox1.Text;
             string AccName = "Account=" + textBox2.Text;
             string Password = "Password=" + textBox3.Text;
+            string wowpaths;
 
 
             string fileName = @"Data\" + textBox1.Text + ".txt";
+
+            
+
 
             var pn = fileName;
             var badStrings = new List<string>()
@@ -105,16 +90,66 @@ namespace Wow_Launcher
 
 
             if (Invalidexists == "false")
-            { 
-                string[] lines = { ServerName, AccName, Password };
+            {
+                var openFileDialog = new OpenFileDialog();
+                wowpaths = openFileDialog.FileName;
+
+                openFileDialog.InitialDirectory = "c:\\";
+                openFileDialog.Filter = "exe files (*.exe)|*.exe";
+                openFileDialog.FilterIndex = 2;
+                openFileDialog.RestoreDirectory = true;
+
+                DialogResult s;
+                s = MessageBox.Show("Choose WoW.exe Location", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                if (s == DialogResult.OK)
+                {
+                    if (openFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        wowpaths = openFileDialog.FileName;
+                    }
+                }
+
+
+                string wowpath2 = "wowpath=" + @"" + wowpaths;
+                string[] lines = { ServerName, AccName, Password, wowpath2 };
             using (StreamWriter outputFile = new StreamWriter(fileName, true))
             {
                 foreach (string line in lines)
                     outputFile.WriteLine(line);
             }
+
+                string[] textFiles2 = Directory.GetFiles(@"Data\", "*.txt");
+                foreach (string file in textFiles2)
+                {
+                    string filePath2 = file;
+                    string directoryPath = Path.GetDirectoryName(filePath2);
+                    string[] lines2 = File.ReadAllLines(file);
+                    for (int i = 0; i < lines2.Length; i++)
+                    {
+                        // check if the line contains the search string 
+                        if (lines[i].Contains("wowpath="))
+                        {
+                            // modify the line as desired  
+                            string data1 = lines2[i].Substring(8);
+                            string empty = "";
+                            if (data1 == empty)
+                            {
+                                File.Delete(filePath2);
+                            }
+                            break;
+                        }
+
+
+
+                    }
+
+                }   
+            }
+
+
             comboBox1.BeginUpdate();
             comboBox1.Items.Clear();
-            string[] textFiles = System.IO.Directory.GetFiles(@"Data\", "*.txt");
+            string[] textFiles = Directory.GetFiles(@"Data\", "*.txt");
             foreach (string file in textFiles)
             {
                 // Remove the directory from the string
@@ -138,8 +173,7 @@ namespace Wow_Launcher
             button1.Visible = false;
             button2.Visible = false;
             button3.Visible = false;
-            button3.Visible = false;
-            }
+            button5.Visible = false;
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -147,7 +181,7 @@ namespace Wow_Launcher
             string filePath = @"Data\" + comboBox1.Text + ".txt";
 
             // read the contents of the file into a string array 
-            string[] lines = System.IO.File.ReadAllLines(filePath);
+            string[] lines = File.ReadAllLines(filePath);
 
             // loop through each line in the array 
             for (int i = 0; i < lines.Length; i++)
@@ -191,8 +225,11 @@ namespace Wow_Launcher
 
             }
 
+            
+
             button2.Visible = true;
             button3.Visible = true;
+            button5.Visible = true;
 
             textBox1.ReadOnly = true;
             textBox2.ReadOnly = true;
@@ -211,6 +248,7 @@ namespace Wow_Launcher
             button2.Visible = false;
             button3.Visible = false;
             button4.Visible = false;
+            button5.Visible = false;
             textBox1.ReadOnly = true;
             textBox2.ReadOnly = true;
             textBox3.ReadOnly = true;
@@ -222,7 +260,7 @@ namespace Wow_Launcher
             }
 
 
-            string[] textFiles = System.IO.Directory.GetFiles(@"Data\", "*.txt");
+            string[] textFiles = Directory.GetFiles(@"Data\", "*.txt");
             foreach (string file in textFiles)
             {
                 // Remove the directory from the string
@@ -252,11 +290,11 @@ namespace Wow_Launcher
 
             if (vfile.Exists)
             {
-                System.IO.File.Delete(filePath);
+                File.Delete(filePath);
             }
             comboBox1.BeginUpdate();
             comboBox1.Items.Clear();
-            string[] textFiles = System.IO.Directory.GetFiles(@"Data\", "*.txt");
+            string[] textFiles = Directory.GetFiles(@"Data\", "*.txt");
             foreach (string file in textFiles)
             {
                 // Remove the directory from the string
@@ -275,6 +313,7 @@ namespace Wow_Launcher
 
             button2.Visible = false;
             button3.Visible = false;
+            button5.Visible = false;
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -289,6 +328,47 @@ namespace Wow_Launcher
             button1.Visible = true;
             button2.Visible = false;
             button3.Visible = false;
+            button5.Visible = false;
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            string filePath = @"Data\" + comboBox1.Text + ".txt";
+            string directoryPath = Path.GetDirectoryName(filePath);
+            string filename = Path.GetFileName(filePath);
+            var vfile = new FileInfo(filename);
+
+
+            string[] lines = File.ReadAllLines(filePath);
+            for (int i = 0; i < lines.Length; i++)
+            {
+                // check if the line contains the search string 
+                if (lines[i].Contains("wowpath="))
+                {
+                    // modify the line as desired  
+                    string data1 = lines[i].Substring(8);
+                    string empty = "";
+                    if (data1 != empty)
+                        {
+                            string wowline4 = data1;
+                            var wow = new Process();
+                            wow.StartInfo.WorkingDirectory = directoryPath;
+                            wow.StartInfo.FileName = wowline4;
+                            wow.Start();
+                        }
+                    break;
+                }
+
+                
+
+            }
+
+            //button5.Visible = true;
+
+
+
+            
+
         }
     }
 }
