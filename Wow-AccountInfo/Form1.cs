@@ -65,9 +65,11 @@ namespace Wow_Launcher
             var pn = fileName;
             var badStrings = new List<string>()
                  {
-                 "<",">","?","*","#"
+                 "<",">","?","*","#","/",":","\\","`","|","'/'"
                  };
-            foreach (var badString in badStrings)
+
+            char[] invalidPathChars = Path.GetInvalidPathChars();
+            foreach (var badString in invalidPathChars)
             {
                 if (pn.Contains(badString))
                 {
