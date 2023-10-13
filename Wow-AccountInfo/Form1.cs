@@ -336,7 +336,6 @@ namespace Wow_Launcher
         private void button5_Click(object sender, EventArgs e)
         {
             string filePath = @"Data\" + comboBox1.Text + ".txt";
-            string directoryPath = Path.GetDirectoryName(filePath);
             string filename = Path.GetFileName(filePath);
             var vfile = new FileInfo(filename);
 
@@ -353,11 +352,28 @@ namespace Wow_Launcher
                     if (data1 != empty)
                         {
                             string wowline4 = data1;
+                            string directoryPath = Path.GetDirectoryName(wowline4);
                             var wow = new Process();
                             wow.StartInfo.WorkingDirectory = directoryPath;
                             wow.StartInfo.FileName = wowline4;
+                            wow.StartInfo.Arguments = "";
+                            wow.StartInfo.UseShellExecute = false;
                             wow.Start();
-                        }
+
+                        /*
+                        var startwow = new Process();
+                        var startwowstring = "/C " + "start " + wowline4 + "";
+                        string directoryPath2 = Path.GetDirectoryName(wowline4);
+                        startwow.StartInfo.FileName = "cmd.exe";
+                        startwow.StartInfo.WorkingDirectory = directoryPath2;
+                        startwow.StartInfo.Arguments = startwowstring;
+                        startwow.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                        startwow.Start();
+                        startwow.WaitForExit();
+                        */
+
+
+                    }
                     break;
                 }
 
