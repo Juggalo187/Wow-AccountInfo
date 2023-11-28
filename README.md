@@ -1,3 +1,3 @@
 # Wow-AccountInfo
 
-Save Your Accoutn Name and Password of servers you play on.
+Save Your Account Name and Password of servers you play on.
